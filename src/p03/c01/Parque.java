@@ -54,19 +54,16 @@ public class Parque implements IParque{
 	}
 
 	@Override
-	public void salirDelParque(String puerta) throws InterruptedException{
+	public synchronized void salirDelParque(String puerta) throws InterruptedException{
 		comprobarAntesDeSalir();
 
-		if(!contadoresPersonasPuerta.containsKey(puerta)) {
-			contadoresPersonasPuerta.put(puerta, 0);
-		}
-
-		contadorPersonasTotales++;
-		contadoresPersonasPuerta.put(puerta,contadoresPersonasPuerta.get(puerta)+1);
+		setValor(contadorPersonasTotales-1);
+		contadoresPersonasPuerta.put(puerta,contadoresPersonasPuerta.get(puerta)-1);
 
 		ttotal += (System.currentTimeMillis()-tinicial)/1000;
 		tmedio=ttotal/contadorPersonasTotales;
 
+		
 		imprimirInfo(puerta, "Salida");
 
 		checkInvariante();
@@ -94,7 +91,7 @@ public class Parque implements IParque{
 
 	protected void checkInvariante() {
 		assert sumarContadoresPuerta() == contadorPersonasTotales : "INV: La suma de contadores de las puertas debe ser igual al valor del contador del parte";
-		
+
 		// TODO 
 		// TODO
 
