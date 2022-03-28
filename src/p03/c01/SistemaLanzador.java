@@ -19,6 +19,6 @@ public class SistemaLanzador {
 			new Thread (salidas).start();
 			
 		}
-		System.out.println("Â¡Parque cerrado!");
+		System.out.println("¡Parque cerrado!");
 	}	
 }

@@ -48,7 +48,7 @@ public class Parque implements IParque{
 		return contadorPersonasTotales;
 	}
 
-	protected void setValor(int nuevoValor) {
+	protected synchronized void setValor(int nuevoValor) {
 		contadorPersonasTotales=nuevoValor;
 		notifyAll();
 	}
@@ -72,7 +72,7 @@ public class Parque implements IParque{
 
 	private void imprimirInfo (String puerta, String movimiento){
 		System.out.println(movimiento + " por puerta " + puerta);
-		System.out.println("--> Personas en el parque " + contadorPersonasTotales + "tiempo medio de estancia: " + tmedio);
+		System.out.println("--> Personas en el parque " + contadorPersonasTotales + " tiempo medio de estancia: " + tmedio);
 
 		for(String p: contadoresPersonasPuerta.keySet()){
 			System.out.println("----> Por puerta " + p + " " + contadoresPersonasPuerta.get(p));
@@ -91,20 +91,21 @@ public class Parque implements IParque{
 
 	protected void checkInvariante() {
 		assert sumarContadoresPuerta() == contadorPersonasTotales : "INV: La suma de contadores de las puertas debe ser igual al valor del contador del parte";
-
+		assert contadorPersonasTotales >= 0 : "El total de personas es negativo";
+		
 		// TODO 
 		// TODO
 
 	}
 
 	protected void comprobarAntesDeEntrar() throws InterruptedException{
-		while (contadorPersonasTotales == MIN) {
+		while (contadorPersonasTotales == MAX ) {
 			wait();
 		}
 	}
 
 	protected void comprobarAntesDeSalir() throws InterruptedException{
-		while (contadorPersonasTotales == MAX) {
+		while (contadorPersonasTotales == MIN) {
 			wait();
 		}
 	}
