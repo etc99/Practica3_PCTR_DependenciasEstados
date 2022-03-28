@@ -18,7 +18,7 @@ public class SistemaLanzador {
 			ActividadSalidaPuerta salidas = new ActividadSalidaPuerta(puerta,parque);
 			new Thread (salidas).start();
 			
-			
 		}
+		System.out.println("¡Parque cerrado!");
 	}	
 }
