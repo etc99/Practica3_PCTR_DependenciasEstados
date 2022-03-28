@@ -6,53 +6,56 @@ import java.util.Hashtable;
 public class Parque implements IParque{
 
 
-	// TODO 
 	private int contadorPersonasTotales;
 	private Hashtable<String, Integer> contadoresPersonasPuerta;
+	private long tinicial;
+	private long ttotal;
+	private long tmedio;
 	
+	private static final int MIN=0;	
+	private static final int MAX=40;
 	
-	public Parque() {	// TODO
+	public Parque() {	
 		contadorPersonasTotales = 0;
 		contadoresPersonasPuerta = new Hashtable<String, Integer>();
-		// TODO
+		tinicial=System.currentTimeMillis();
+		tmedio=0;
+		ttotal=0;
 	}
 
 
 	@Override
-	public void entrarAlParque(String puerta){		// TODO
+	public synchronized void entrarAlParque(String puerta) throws InterruptedException{
+		comprobarAntesDeEntrar();
 		
-		// Si no hay entradas por esa puerta, inicializamos
 		if (contadoresPersonasPuerta.get(puerta) == null){
 			contadoresPersonasPuerta.put(puerta, 0);
 		}
 		
-		// TODO
-				
-		
-		// Aumentamos el contador total y el individual
 		contadorPersonasTotales++;		
 		contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta)+1);
 		
-		// Imprimimos el estado del parque
+		ttotal += (System.currentTimeMillis()-tinicial)/1000;
+		tmedio=ttotal/contadorPersonasTotales;
+		
 		imprimirInfo(puerta, "Entrada");
 		
-		// TODO
-		
-		
-		// TODO
+		checkInvariante();
 		
 	}
 	
-	// 
-	// TODO Método salirDelParque
-	//
 	
+	@Override
+	public void salirDelParque(String puerta) throws InterruptedException{
+		// TODO Auto-generated method stub
+		
+	}
 	
 	private void imprimirInfo (String puerta, String movimiento){
 		System.out.println(movimiento + " por puerta " + puerta);
-		System.out.println("--> Personas en el parque " + contadorPersonasTotales); //+ " tiempo medio de estancia: "  + tmedio);
+		System.out.println("--> Personas en el parque " + contadorPersonasTotales + "tiempo medio de estancia: " + tmedio);
 		
-		// Iteramos por todas las puertas e imprimimos sus entradas
+		//
 		for(String p: contadoresPersonasPuerta.keySet()){
 			System.out.println("----> Por puerta " + p + " " + contadoresPersonasPuerta.get(p));
 		}
@@ -77,17 +80,20 @@ public class Parque implements IParque{
 		
 	}
 
-	protected void comprobarAntesDeEntrar(){	// TODO
-		//
-		// TODO
-		//
+	protected void comprobarAntesDeEntrar() throws InterruptedException{
+		while (contadorPersonasTotales == MIN) {
+			wait();
+		}
 	}
 
-	protected void comprobarAntesDeSalir(){		// TODO
-		//
-		// TODO
-		//
+	protected void comprobarAntesDeSalir() throws InterruptedException{
+		while (contadorPersonasTotales == MAX) {
+			wait();
+		}
 	}
+
+
+	
 
 
 }
