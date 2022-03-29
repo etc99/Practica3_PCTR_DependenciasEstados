@@ -57,7 +57,8 @@ public class Parque implements IParque{
 	public synchronized void salirDelParque(String puerta) throws InterruptedException{
 		comprobarAntesDeSalir();
 
-		setValor(contadorPersonasTotales-1);
+		
+		contadorPersonasTotales--;
 		contadoresPersonasPuerta.put(puerta,contadoresPersonasPuerta.get(puerta)-1);
 
 		ttotal += (System.currentTimeMillis()-tinicial)/1000;
