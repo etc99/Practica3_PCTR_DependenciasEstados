@@ -11,11 +11,11 @@ public class Parque implements IParque{
 	private long tinicial;
 	private long ttotal;
 	private long tmedio;
-
 	private static final int MIN=0;	
-	private static final int MAX=40;
+	private static final int MAX=50;
 
 	public Parque() {	
+
 		contadorPersonasTotales = 0;
 		contadoresPersonasPuerta = new Hashtable<String, Integer>();
 		tinicial=System.currentTimeMillis();
@@ -25,7 +25,7 @@ public class Parque implements IParque{
 
 
 	@Override
-	public synchronized void entrarAlParque(String puerta) throws InterruptedException{
+	public synchronized void entrarAlParque(String puerta) {
 		comprobarAntesDeEntrar();
 
 		if (contadoresPersonasPuerta.get(puerta) == null){
@@ -41,33 +41,25 @@ public class Parque implements IParque{
 		imprimirInfo(puerta, "Entrada");
 
 		checkInvariante();
-
-	}
-
-	public synchronized int getValor() {
-		return contadorPersonasTotales;
-	}
-
-	protected synchronized void setValor(int nuevoValor) {
-		contadorPersonasTotales=nuevoValor;
 		notifyAll();
 	}
 
+
 	@Override
-	public synchronized void salirDelParque(String puerta) throws InterruptedException{
+	public synchronized void salirDelParque(String puerta) {
 		comprobarAntesDeSalir();
 
-		
 		contadorPersonasTotales--;
 		contadoresPersonasPuerta.put(puerta,contadoresPersonasPuerta.get(puerta)-1);
 
 		ttotal += (System.currentTimeMillis()-tinicial)/1000;
 		tmedio=ttotal/contadorPersonasTotales;
 
-		
+
 		imprimirInfo(puerta, "Salida");
 
 		checkInvariante();
+		notifyAll();
 
 	}
 
@@ -92,26 +84,32 @@ public class Parque implements IParque{
 
 	protected void checkInvariante() {
 		assert sumarContadoresPuerta() == contadorPersonasTotales : "INV: La suma de contadores de las puertas debe ser igual al valor del contador del parte";
-		assert contadorPersonasTotales >= 0 : "El total de personas es negativo";
-		
-		// TODO 
-		// TODO
+		assert contadorPersonasTotales >= MIN : "INV: El número de personas totales tiene que ser superior a 0";
+		assert  contadorPersonasTotales <= MAX : "INV: El número de personas totales tiene que ser inferior a 50";
 
 	}
 
-	protected void comprobarAntesDeEntrar() throws InterruptedException{
+	protected void comprobarAntesDeEntrar() {
 		while (contadorPersonasTotales == MAX ) {
-			wait();
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
-	protected void comprobarAntesDeSalir() throws InterruptedException{
+	protected void comprobarAntesDeSalir() {
 		while (contadorPersonasTotales == MIN) {
-			wait();
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
-
-
 
 
 

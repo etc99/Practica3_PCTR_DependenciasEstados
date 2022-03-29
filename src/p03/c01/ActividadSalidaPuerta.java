@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 public class ActividadSalidaPuerta implements Runnable {
 
-	private static int NUMENTRADAS = 20;
+	private static int NUMSALIDAS = 20;
 	private String puerta;
 	private IParque parque;
 
@@ -18,7 +18,7 @@ public class ActividadSalidaPuerta implements Runnable {
 
 	@Override
 	public void run() {
-		for (int i = 0; i < NUMENTRADAS; i++) {
+		for (int i = 0; i < NUMSALIDAS; i++) {
 			try {
 				parque.salirDelParque(puerta);
 				TimeUnit.MILLISECONDS.sleep(new Random().nextInt(5) * 1000);
