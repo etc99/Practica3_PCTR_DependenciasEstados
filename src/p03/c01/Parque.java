@@ -8,9 +8,6 @@ public class Parque implements IParque{
 
 	private int contadorPersonasTotales;
 	private Hashtable<String, Integer> contadoresPersonasPuerta;
-	private long tinicial;
-	private long ttotal;
-	private long tmedio;
 	private static final int MIN=0;	
 	private static final int MAX=50;
 
@@ -25,7 +22,6 @@ public class Parque implements IParque{
 	@Override
 	public synchronized void entrarAlParque(String puerta) {
 		
-
 		if (contadoresPersonasPuerta.get(puerta) == null){
 			contadoresPersonasPuerta.put(puerta, 0);
 		}
@@ -51,7 +47,6 @@ public class Parque implements IParque{
 		contadorPersonasTotales--;
 		contadoresPersonasPuerta.put(puerta,contadoresPersonasPuerta.get(puerta)-1);
 
-		
 		imprimirInfo(puerta, "Salida");
 
 		checkInvariante();
@@ -84,7 +79,7 @@ public class Parque implements IParque{
 		assert  contadorPersonasTotales <= MAX : "INV: El número de personas totales tiene que ser inferior o igual a 50";
 
 	}
-	//todo
+	
 	protected void comprobarAntesDeEntrar() {
 		while (contadorPersonasTotales == MAX ) {
 			try {
