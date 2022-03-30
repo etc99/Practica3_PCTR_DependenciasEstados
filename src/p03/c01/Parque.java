@@ -18,26 +18,22 @@ public class Parque implements IParque{
 
 		contadorPersonasTotales = 0;
 		contadoresPersonasPuerta = new Hashtable<String, Integer>();
-		tinicial=System.currentTimeMillis();
-		tmedio=0;
-		ttotal=0;
+		
 	}
 
 
 	@Override
 	public synchronized void entrarAlParque(String puerta) {
-		comprobarAntesDeEntrar();
+		
 
 		if (contadoresPersonasPuerta.get(puerta) == null){
 			contadoresPersonasPuerta.put(puerta, 0);
 		}
-
+		comprobarAntesDeEntrar();
 		contadorPersonasTotales++;		
 		contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta)+1);
 
-		ttotal += (System.currentTimeMillis()-tinicial)/1000;
-		tmedio=ttotal/contadorPersonasTotales;
-
+		
 		imprimirInfo(puerta, "Entrada");
 
 		checkInvariante();
@@ -47,15 +43,15 @@ public class Parque implements IParque{
 
 	@Override
 	public synchronized void salirDelParque(String puerta) {
+		
+		if (contadoresPersonasPuerta.get(puerta) == null){
+			contadoresPersonasPuerta.put(puerta, 0);
+		}
 		comprobarAntesDeSalir();
-
 		contadorPersonasTotales--;
 		contadoresPersonasPuerta.put(puerta,contadoresPersonasPuerta.get(puerta)-1);
 
-		ttotal += (System.currentTimeMillis()-tinicial)/1000;
-		tmedio=ttotal/contadorPersonasTotales;
-
-
+		
 		imprimirInfo(puerta, "Salida");
 
 		checkInvariante();
@@ -65,7 +61,7 @@ public class Parque implements IParque{
 
 	private void imprimirInfo (String puerta, String movimiento){
 		System.out.println(movimiento + " por puerta " + puerta);
-		System.out.println("--> Personas en el parque " + contadorPersonasTotales + " tiempo medio de estancia: " + tmedio);
+		System.out.println("--> Personas en el parque " + contadorPersonasTotales);
 
 		for(String p: contadoresPersonasPuerta.keySet()){
 			System.out.println("----> Por puerta " + p + " " + contadoresPersonasPuerta.get(p));
@@ -84,11 +80,11 @@ public class Parque implements IParque{
 
 	protected void checkInvariante() {
 		assert sumarContadoresPuerta() == contadorPersonasTotales : "INV: La suma de contadores de las puertas debe ser igual al valor del contador del parte";
-		assert contadorPersonasTotales >= MIN : "INV: El número de personas totales tiene que ser superior a 0";
-		assert  contadorPersonasTotales <= MAX : "INV: El número de personas totales tiene que ser inferior a 50";
+		assert contadorPersonasTotales >= MIN : "INV: El número de personas totales tiene que ser superior o igual a 0";
+		assert  contadorPersonasTotales <= MAX : "INV: El número de personas totales tiene que ser inferior o igual a 50";
 
 	}
-
+	//todo
 	protected void comprobarAntesDeEntrar() {
 		while (contadorPersonasTotales == MAX ) {
 			try {
